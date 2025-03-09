@@ -14,7 +14,7 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 use std::collections::HashMap;
 
@@ -39,6 +39,33 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        // let mut return_data = HashMap::new();
+
+
+        // 方法一：要修改数据顺序
+        // scores.entry(team_1_name)
+        // .and_modify(|e| {e.goals_scored += team_1_score; e.goals_conceded += team_2_score})
+        // .or_insert(Team { goals_scored: (team_1_score), goals_conceded: (team_2_score) });
+
+        
+
+        //方法二：编译不过
+        //  match scores.entry(team_1_name) {
+        //     Entry::Occupied(mut entry) => {
+        //         *entry.get_mut() += team_1_score;
+        //     }
+        //     Entry::Vacant(entry) => {
+        //         entry.insert(team_1_score);
+        //     }
+        // }
+
+        //方法三：
+        let scores1 = scores.entry(team_1_name).or_insert(Team { goals_scored: (0), goals_conceded: (0) });
+        *scores1 = Team { goals_scored: (scores1.goals_scored + team_1_score), goals_conceded: (scores1.goals_conceded + team_2_score) };
+
+        let scores2 = scores.entry(team_2_name).or_insert(Team { goals_scored: (0), goals_conceded: (0) });
+        *scores2 = Team { goals_scored: (scores2.goals_scored + team_2_score), goals_conceded: (scores2.goals_conceded + team_1_score) };
+
     }
     scores
 }
@@ -47,6 +74,15 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
 mod tests {
     use super::*;
 
+    // 方法一：数据切换顺序
+    // fn get_results() -> String {
+    //     let results = "".to_string()
+    //     + "Germany,England,2,1\n"
+    //     + "England,France,4,2\n"
+    //         + "France,Italy,3,1\n"
+    //         + "Poland,Spain,2,0\n";
+    //     results
+    // }    
     fn get_results() -> String {
         let results = "".to_string()
             + "England,France,4,2\n"
